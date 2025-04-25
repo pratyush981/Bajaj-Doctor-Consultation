@@ -1,6 +1,6 @@
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Video, Building2 } from "lucide-react";
+import { Video, Building2, MapPin, Languages } from "lucide-react";
 
 interface Clinic {
   name: string;
@@ -55,8 +55,13 @@ const DoctorCard = ({
           <p className="font-semibold text-primary-700">
             Consultation: ₹{consultationFee}
           </p>
-          <p className="text-xs text-gray-500">{clinic.name}</p>
-          <p className="text-xs text-gray-500">{clinic.address}</p>
+          <div className="flex items-start gap-1">
+            <MapPin className="h-4 w-4 text-gray-500 mt-0.5 flex-shrink-0" />
+            <div>
+              <p className="text-xs text-gray-500 font-medium">{clinic.name}</p>
+              <p className="text-xs text-gray-500">{clinic.address}</p>
+            </div>
+          </div>
           <div className="flex gap-2 pt-2">
             {videoConsult && (
               <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-xs">
