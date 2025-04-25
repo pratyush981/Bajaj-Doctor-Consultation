@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Searchbar from "@/components/Searchbar";
@@ -100,7 +99,42 @@ const mockDoctors: Doctor[] = [
       address: "Fatima Nagar"
     }
   },
-  // Add more doctors from your data as needed
+  {
+    id: "111876",
+    name: "Dr. Sourabh S Sable",
+    nameInitials: "SS",
+    imageUrl: "https://doctorlistingingestionpr.azureedge.net/547386499852161468_ecaa70046f0f11ecacc7c2e51fc781a7_ProfilePic_Crop%20%282%29.jpg",
+    specialties: ["Audiologist"],
+    experience: 4,
+    consultationFee: 500,
+    videoConsult: true,
+    inClinic: true,
+    languages: ["English", "हिन्दी", "मराठी"],
+    clinic: {
+      name: "Resonance Speech and Hearing Clinic",
+      locality: "Wanowrie",
+      city: "Pune",
+      address: "Kumar primus building"
+    }
+  },
+  {
+    id: "1742568325708001",
+    name: "Dr. Subhash Bajaj",
+    nameInitials: "SB",
+    imageUrl: "https://doctorlistingingestionpr.blob.core.windows.net/doctorprofilepic-thumbnail/f6fa7977-56d4-4bc9-86c6-615e61b29e2f/911742568229405185_6715411420d011f095cac638c638083a_ProfilePic_Screenshot_20250329_145310.jpg",
+    specialties: ["General Physician"],
+    experience: 11,
+    consultationFee: 600,
+    videoConsult: true,
+    inClinic: true,
+    languages: ["English", "हिन्दी"],
+    clinic: {
+      name: "Dr .Bajaj Wellness Clinic",
+      locality: "Wanowarie",
+      city: "Pune",
+      address: "Shop no. 38 Sacred Heart Town"
+    }
+  }
 ];
 
 const Index = () => {
@@ -117,37 +151,31 @@ const Index = () => {
   const filteredDoctors = useMemo(() => {
     let filtered = [...mockDoctors];
 
-    // Filter by search term
     if (searchTerm) {
       filtered = filtered.filter(doctor =>
         doctor.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Filter by consultation type
     if (consultationType !== "all") {
       filtered = filtered.filter(doctor =>
         consultationType === "video" ? doctor.videoConsult : doctor.inClinic
       );
     }
 
-    // Filter by specialties
     if (selectedSpecialties.length > 0) {
       filtered = filtered.filter(doctor =>
         doctor.specialties.some(specialty => selectedSpecialties.includes(specialty))
       );
     }
 
-    // Sort results
     if (sortBy) {
       filtered.sort((a, b) => {
         if (sortBy === "fees") {
-          // Convert fee strings to numbers by removing non-numeric characters
           const feeA = typeof a.consultationFee === 'number' ? a.consultationFee : parseInt(String(a.consultationFee).replace(/[^\d]/g, ''));
           const feeB = typeof b.consultationFee === 'number' ? b.consultationFee : parseInt(String(b.consultationFee).replace(/[^\d]/g, ''));
           return feeA - feeB;
         }
-        // Sort by experience (high to low)
         return b.experience - a.experience;
       });
     }
