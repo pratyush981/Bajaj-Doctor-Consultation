@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import Searchbar from "@/components/Searchbar";
 import Filters from "@/components/Filters";
@@ -12,6 +13,8 @@ const mockDoctors = [
     experience: 12,
     consultationFee: 150,
     imageUrl: "https://i.pravatar.cc/300?img=1",
+    videoConsult: true,
+    inClinic: true,
   },
   {
     id: 2,
@@ -20,6 +23,8 @@ const mockDoctors = [
     experience: 8,
     consultationFee: 130,
     imageUrl: "https://i.pravatar.cc/300?img=2",
+    videoConsult: false,
+    inClinic: true,
   },
   {
     id: 3,
@@ -28,40 +33,27 @@ const mockDoctors = [
     experience: 15,
     consultationFee: 140,
     imageUrl: "https://i.pravatar.cc/300?img=3",
-  },
-  {
-    id: 4,
-    name: "Dr. David Wilson",
-    specialties: ["Orthopedics"],
-    experience: 20,
-    consultationFee: 160,
-    imageUrl: "https://i.pravatar.cc/300?img=4",
-  },
-  {
-    id: 5,
-    name: "Dr. Lisa Thompson",
-    specialties: ["Dermatology"],
-    experience: 10,
-    consultationFee: 145,
-    imageUrl: "https://i.pravatar.cc/300?img=5",
-  },
-  {
-    id: 6,
-    name: "Dr. James Anderson",
-    specialties: ["Psychiatry", "Neurology"],
-    experience: 14,
-    consultationFee: 155,
-    imageUrl: "https://i.pravatar.cc/300?img=6",
+    videoConsult: true,
+    inClinic: false,
   },
 ];
 
 const Index = () => {
+  const [consultationMode, setConsultationMode] = useState("all");
+
+  const filteredDoctors = mockDoctors.filter((doctor) => {
+    if (consultationMode === "all") return true;
+    if (consultationMode === "video") return doctor.videoConsult;
+    if (consultationMode === "clinic") return doctor.inClinic;
+    return true;
+  });
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gray-50">
         {/* Sidebar */}
         <aside className="w-64 bg-white border-r border-gray-200 p-4 hidden md:block">
-          <Filters />
+          <Filters onConsultationModeChange={setConsultationMode} />
         </aside>
 
         {/* Main Content */}
@@ -73,7 +65,7 @@ const Index = () => {
 
           {/* Doctor Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockDoctors.map((doctor) => (
+            {filteredDoctors.map((doctor) => (
               <DoctorCard key={doctor.id} {...doctor} />
             ))}
           </div>
