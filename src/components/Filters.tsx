@@ -2,46 +2,49 @@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Building2, Video, Users } from "lucide-react";
-
-const specialties = [
-  "Cardiology",
-  "Dermatology",
-  "Neurology",
-  "Pediatrics",
-  "Orthopedics",
-  "Psychiatry",
-];
+import { ConsultationType, SortType } from "@/types/doctor";
 
 interface FiltersProps {
-  onConsultationModeChange: (value: string) => void;
+  specialties: string[];
+  selectedSpecialties: string[];
+  consultationType: ConsultationType;
+  sortBy: SortType | null;
+  onConsultationTypeChange: (type: ConsultationType) => void;
+  onSpecialtyChange: (specialty: string) => void;
+  onSortChange: (type: SortType) => void;
 }
 
-const Filters = ({ onConsultationModeChange }: FiltersProps) => {
+const Filters = ({
+  specialties,
+  selectedSpecialties,
+  consultationType,
+  sortBy,
+  onConsultationTypeChange,
+  onSpecialtyChange,
+  onSortChange,
+}: FiltersProps) => {
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6">
       <div>
         <h3 className="text-lg font-semibold mb-4">Mode of Consultation</h3>
-        <ToggleGroup
-          type="single"
-          className="flex flex-col gap-2 sm:flex-row"
-          onValueChange={onConsultationModeChange}
+        <RadioGroup
           defaultValue="all"
+          value={consultationType}
+          onValueChange={(value) => onConsultationTypeChange(value as ConsultationType)}
         >
-          <ToggleGroupItem value="all" className="w-full sm:w-auto gap-2">
-            <Users className="h-4 w-4" />
-            All
-          </ToggleGroupItem>
-          <ToggleGroupItem value="video" className="w-full sm:w-auto gap-2">
-            <Video className="h-4 w-4" />
-            Video
-          </ToggleGroupItem>
-          <ToggleGroupItem value="clinic" className="w-full sm:w-auto gap-2">
-            <Building2 className="h-4 w-4" />
-            In-clinic
-          </ToggleGroupItem>
-        </ToggleGroup>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="all" id="all" />
+            <Label htmlFor="all">All</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="video" id="video" />
+            <Label htmlFor="video">Video Consult</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="clinic" id="clinic" />
+            <Label htmlFor="clinic">In Clinic</Label>
+          </div>
+        </RadioGroup>
       </div>
 
       <div>
@@ -49,7 +52,11 @@ const Filters = ({ onConsultationModeChange }: FiltersProps) => {
         <div className="space-y-3">
           {specialties.map((specialty) => (
             <div key={specialty} className="flex items-center space-x-2">
-              <Checkbox id={specialty} />
+              <Checkbox
+                id={specialty}
+                checked={selectedSpecialties.includes(specialty)}
+                onCheckedChange={() => onSpecialtyChange(specialty)}
+              />
               <label
                 htmlFor={specialty}
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -59,6 +66,23 @@ const Filters = ({ onConsultationModeChange }: FiltersProps) => {
             </div>
           ))}
         </div>
+      </div>
+
+      <div>
+        <h3 className="text-lg font-semibold mb-4">Sort By</h3>
+        <RadioGroup
+          value={sortBy || ""}
+          onValueChange={(value) => onSortChange(value as SortType)}
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="fees" id="fees" />
+            <Label htmlFor="fees">Fees (Low to High)</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="experience" id="experience" />
+            <Label htmlFor="experience">Experience (High to Low)</Label>
+          </div>
+        </RadioGroup>
       </div>
     </div>
   );

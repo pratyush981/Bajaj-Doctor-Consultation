@@ -1,17 +1,54 @@
 
-import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { useState } from "react";
+import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command";
+import { useSearchDoctors } from "@/hooks/useSearchDoctors";
+import { Doctor } from "@/types/doctor";
 
-const Searchbar = () => {
+interface SearchbarProps {
+  doctors: Doctor[];
+  onSearch: (term: string) => void;
+}
+
+const Searchbar = ({ doctors, onSearch }: SearchbarProps) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const { suggestions } = useSearchDoctors(doctors, searchTerm);
+
+  const handleSelect = (doctorName: string) => {
+    setSearchTerm(doctorName);
+    onSearch(doctorName);
+  };
+
+  const handleInputChange = (value: string) => {
+    setSearchTerm(value);
+    if (!value) onSearch("");
+  };
+
   return (
-    <div className="relative w-full max-w-2xl">
-      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-      <Input
-        type="search"
-        placeholder="Search doctors by name, specialty..."
-        className="pl-10 py-6 bg-white border border-gray-200 rounded-xl shadow-sm focus-visible:ring-primary"
+    <Command className="rounded-lg border shadow-md">
+      <CommandInput
+        value={searchTerm}
+        onValueChange={handleInputChange}
+        placeholder="Search doctors by name..."
+        className="h-14"
       />
-    </div>
+      {searchTerm && (
+        <CommandList>
+          <CommandEmpty>No doctors found.</CommandEmpty>
+          <CommandGroup>
+            {suggestions.map((doctor) => (
+              <CommandItem
+                key={doctor.id}
+                value={doctor.name}
+                onSelect={handleSelect}
+                className="cursor-pointer"
+              >
+                {doctor.name}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </CommandList>
+      )}
+    </Command>
   );
 };
 
