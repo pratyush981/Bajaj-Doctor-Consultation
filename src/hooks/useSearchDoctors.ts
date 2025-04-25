@@ -9,6 +9,7 @@ export const useSearchDoctors = (doctors: Doctor[], searchTerm: string) => {
     if (!searchTerm) return [];
     
     const normalizedTerm = searchTerm.toLowerCase();
+    // Return top 3 matches as suggestions
     return doctors
       .filter(doctor => doctor.name.toLowerCase().includes(normalizedTerm))
       .slice(0, 3);

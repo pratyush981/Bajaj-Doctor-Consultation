@@ -23,32 +23,55 @@ const Searchbar = ({ doctors, onSearch }: SearchbarProps) => {
     if (!value) onSearch("");
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      onSearch(searchTerm);
+    }
+  };
+
   return (
-    <Command className="rounded-lg border shadow-md">
-      <CommandInput
-        value={searchTerm}
-        onValueChange={handleInputChange}
-        placeholder="Search doctors by name..."
-        className="h-14"
-      />
-      {searchTerm && (
-        <CommandList>
-          <CommandEmpty>No doctors found.</CommandEmpty>
-          <CommandGroup>
-            {suggestions.map((doctor) => (
-              <CommandItem
-                key={doctor.id}
-                value={doctor.name}
-                onSelect={handleSelect}
-                className="cursor-pointer"
-              >
-                {doctor.name}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        </CommandList>
-      )}
-    </Command>
+    <div className="relative w-full">
+      <Command className="rounded-lg border shadow-md">
+        <CommandInput
+          value={searchTerm}
+          onValueChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          placeholder="Search doctors by name..."
+          className="h-14"
+        />
+        {searchTerm && suggestions.length > 0 && (
+          <CommandList>
+            <CommandGroup>
+              {suggestions.map((doctor) => (
+                <CommandItem
+                  key={doctor.id}
+                  value={doctor.name}
+                  onSelect={handleSelect}
+                  className="cursor-pointer flex items-center gap-3 p-2"
+                >
+                  {doctor.imageUrl && (
+                    <img 
+                      src={doctor.imageUrl} 
+                      alt={doctor.name}
+                      className="w-8 h-8 rounded-full object-cover" 
+                    />
+                  )}
+                  <div>
+                    <p className="font-medium">{doctor.name}</p>
+                    <p className="text-xs text-gray-500">{doctor.specialties.join(", ")}</p>
+                  </div>
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        )}
+        {searchTerm && suggestions.length === 0 && (
+          <CommandList>
+            <CommandEmpty>No doctors found.</CommandEmpty>
+          </CommandList>
+        )}
+      </Command>
+    </div>
   );
 };
 
