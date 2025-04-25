@@ -2,7 +2,13 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Video, Building2 } from "lucide-react";
 
+interface Clinic {
+  name: string;
+  address: string;
+}
+
 interface DoctorCardProps {
+  id: string;
   name: string;
   specialties: string[];
   experience: number;
@@ -10,6 +16,7 @@ interface DoctorCardProps {
   imageUrl: string;
   videoConsult?: boolean;
   inClinic?: boolean;
+  clinic: Clinic;
 }
 
 const DoctorCard = ({
@@ -20,6 +27,7 @@ const DoctorCard = ({
   imageUrl,
   videoConsult,
   inClinic,
+  clinic,
 }: DoctorCardProps) => {
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
@@ -45,8 +53,10 @@ const DoctorCard = ({
           </div>
           <p className="text-sm text-gray-600">{experience} years experience</p>
           <p className="font-semibold text-primary-700">
-            Consultation: ${consultationFee}
+            Consultation: ₹{consultationFee}
           </p>
+          <p className="text-xs text-gray-500">{clinic.name}</p>
+          <p className="text-xs text-gray-500">{clinic.address}</p>
           <div className="flex gap-2 pt-2">
             {videoConsult && (
               <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-xs">
